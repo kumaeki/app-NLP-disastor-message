@@ -1,24 +1,13 @@
 import json
-import plotly
-import ssl
+
 import pandas as pd
-import nltk
-
+import plotly
+from flask import Flask, render_template, request
 from joblib import load
-
-from flask import Flask
-from flask import render_template, request
 from plotly.graph_objs import Bar
 from sqlalchemy import create_engine
-from models.train_classifier import tokenize
 
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
-nltk.download("stopwords")
+from tokenize_kuma import tokenize_kuma
 
 app = Flask(__name__)
 

@@ -1,23 +1,24 @@
 # import libraries
-import pandas as pd
-import re
+# import pickle
+# import re
+# import ssl
 import sys
-import pickle
-import nltk
-import ssl
 
-from sqlalchemy import create_engine
+# import nltk
+import pandas as pd
 from joblib import dump
-from sqlalchemy import create_engine
-from sklearn.model_selection import train_test_split
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import GridSearchCV
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.multioutput import MultiOutputClassifier
+
+# from nltk.corpus import stopwords
+# from nltk.stem import WordNetLemmatizer
+# from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestClassifier
-from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.pipeline import Pipeline
+from sqlalchemy import create_engine
+
+from tokenize_kuma import tokenize_kuma
 
 
 def load_data(database_filepath, table_name):
@@ -28,28 +29,28 @@ def load_data(database_filepath, table_name):
     return X, y
 
 
-def tokenize(text):
-    # normalization
-    text = re.sub(r"https?://\S+|[^a-zA-Z0-9]", " ", text)
+# def tokenize(text):
+#     # normalization
+#     text = re.sub(r"https?://\S+|[^a-zA-Z0-9]", " ", text)
 
-    # tokenization
-    tokens = word_tokenize(text)
+#     # tokenization
+#     tokens = word_tokenize(text)
 
-    # remove stop words
-    tokens = [t for t in tokens if t not in stopwords.words("english")]
+#     # remove stop words
+#     tokens = [t for t in tokens if t not in stopwords.words("english")]
 
-    lemmatizer = WordNetLemmatizer()
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-    return clean_tokens
+#     lemmatizer = WordNetLemmatizer()
+#     clean_tokens = []
+#     for tok in tokens:
+#         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+#         clean_tokens.append(clean_tok)
+#     return clean_tokens
 
 
 def build_model():
     pipeline = Pipeline(
         [
-            ("vect", CountVectorizer(tokenizer=tokenize, token_pattern=None)),
+            ("vect", CountVectorizer(tokenizer=tokenize_kuma, token_pattern=None)),
             ("tfidf", TfidfTransformer()),
             ("clf", MultiOutputClassifier(RandomForestClassifier())),
         ]

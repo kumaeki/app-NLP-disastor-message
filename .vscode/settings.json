@@ -5,6 +5,7 @@
         "*$py.class",
         ".Python{,/**}",
         "build{,/**}",
+        "{,/**}*.joblib",
         "develop-eggs{,/**}",
         "dist{,/**}",
         "downloads{,/**}",

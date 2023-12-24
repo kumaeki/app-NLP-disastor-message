@@ -1,12 +1,14 @@
 import json
-
+import os
+import io
 import pandas as pd
 import plotly
+from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
+from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from joblib import load
 from plotly.graph_objs import Bar, Heatmap
 from sqlalchemy import create_engine
-
 from tokenize_kuma import tokenize_kuma
 
 app = Flask(__name__)
@@ -17,7 +19,24 @@ engine = create_engine("sqlite:///data/KumaDB.db")
 df = pd.read_sql_table("KumaTable", engine)
 
 # load model
-model = load("models/model.joblib")
+load_dotenv()
+connect_str = os.getenv("STORAGE_CONNECTION_STRING")
+container_name = os.getenv("STORAGE_CONTAINER_NAME")  # "nlpdisaster"
+blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+
+# Get a client to interact with a specific blob
+blob_name = os.getenv("MODEL_BLOB_NAME")  # "model.joblib"
+blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+
+# Download the blob content into a BytesIO buffer
+blob_stream = io.BytesIO()
+blob_client.download_blob().readinto(blob_stream)
+
+# Seek to the beginning of the stream
+blob_stream.seek(0)
+
+# Load your model using joblib
+model = load(blob_stream)  # model = load("models/model.joblib")
 
 
 @app.route("/")

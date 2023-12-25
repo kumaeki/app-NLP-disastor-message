@@ -1,16 +1,8 @@
-# import libraries
-# import pickle
-# import re
-# import ssl
 import sys
 
-# import nltk
 import pandas as pd
 from joblib import dump
 
-# from nltk.corpus import stopwords
-# from nltk.stem import WordNetLemmatizer
-# from nltk.tokenize import word_tokenize
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import GridSearchCV, train_test_split
@@ -22,6 +14,13 @@ from tokenize_kuma import tokenize_kuma
 
 
 def load_data(database_filepath, table_name):
+    """
+    load data from DB, and generate the X, y for next training steps
+
+    :param database_filename: the db path
+    :param table_name: the table name where save the dataframe
+    :return: X, y
+    """
     engine = create_engine(f"sqlite:///{database_filepath}")
     df = pd.read_sql_table(table_name, engine)
     X = df[["message"]]
@@ -29,25 +28,12 @@ def load_data(database_filepath, table_name):
     return X, y
 
 
-# def tokenize(text):
-#     # normalization
-#     text = re.sub(r"https?://\S+|[^a-zA-Z0-9]", " ", text)
-
-#     # tokenization
-#     tokens = word_tokenize(text)
-
-#     # remove stop words
-#     tokens = [t for t in tokens if t not in stopwords.words("english")]
-
-#     lemmatizer = WordNetLemmatizer()
-#     clean_tokens = []
-#     for tok in tokens:
-#         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-#         clean_tokens.append(clean_tok)
-#     return clean_tokens
-
-
 def build_model():
+    """
+    create a NLP pipeline
+
+    :return: pipeline
+    """
     pipeline = Pipeline(
         [
             ("vect", CountVectorizer(tokenizer=tokenize_kuma, token_pattern=None)),
@@ -75,16 +61,36 @@ def build_model():
 
 
 def train_model(model, X_train, Y_train):
+    """
+    train model
+
+    :param model:model
+    :param X_train: X for train
+    :param Y_train: y for train
+    """
     model.fit(X_train["message"].values, Y_train)
 
 
 def evaluate_model(model, X_test, Y_test):
+    """
+    evaluate model, and print the score
+
+    :param model:model
+    :param X_test: X for test
+    :param Y_test: y for test
+    """
     y_pred = model.predict(X_test["message"].values)
     accuracy = (y_pred == Y_test).mean()
     print("Accuracy:\n", accuracy)
 
 
 def save_model(model, model_filepath):
+    """
+    save the trained model
+
+    :param model:model
+    :param model_filepath: the file path where saved the model
+    """
     dump(model, model_filepath)
 
 

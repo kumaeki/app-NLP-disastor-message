@@ -3,7 +3,7 @@ import os
 import io
 import pandas as pd
 import plotly
-from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
+from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from joblib import load
@@ -14,29 +14,55 @@ from tokenize_kuma import tokenize_kuma
 app = Flask(__name__)
 
 
-# load data
-engine = create_engine("sqlite:///data/KumaDB.db")
-df = pd.read_sql_table("KumaTable", engine)
+def load_data():
+    """
+    load dataframe from db
+    the parameters is setted in .env
+    :return: the dataframe
+    """
+    db_name = os.getenv("DB_NAME")
+    table_name = os.getenv("TABLE_NAME")
+    engine = create_engine(f"sqlite:///{db_name}")
+    df = pd.read_sql_table(table_name, engine)
+    return df
 
-# load model
-load_dotenv()
-connect_str = os.getenv("STORAGE_CONNECTION_STRING")
-container_name = os.getenv("STORAGE_CONTAINER_NAME")  # "nlpdisaster"
-blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 
-# Get a client to interact with a specific blob
-blob_name = os.getenv("MODEL_BLOB_NAME")  # "model.joblib"
-blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
+def load_model():
+    """
+    load model from Azure storage account blob
+    the parameters is setted in .env
 
-# Download the blob content into a BytesIO buffer
-blob_stream = io.BytesIO()
-blob_client.download_blob().readinto(blob_stream)
+    :return: the trained model
+    """
+    load_dotenv()
+    is_load_from_storage = os.getenv("IS_LOAD_FROM_STORAGE")
+    if is_load_from_storage == 1:
+        connect_str = os.getenv("STORAGE_CONNECTION_STRING")
+        container_name = os.getenv("STORAGE_CONTAINER_NAME")
+        blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 
-# Seek to the beginning of the stream
-blob_stream.seek(0)
+        # Get a client to interact with a specific blob
+        blob_name = os.getenv("MODEL_BLOB_NAME")
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
 
-# Load your model using joblib
-model = load(blob_stream)  # model = load("models/model.joblib")
+        # Download the blob content into a BytesIO buffer
+        blob_stream = io.BytesIO()
+        blob_client.download_blob().readinto(blob_stream)
+
+        # Seek to the beginning of the stream
+        blob_stream.seek(0)
+
+        # Load your model using joblib
+        model = load(blob_stream)
+    else:
+        model_path = os.getenv("MODEL_BLOB_NAME")
+        model = load(model_path)
+
+    return model
+
+
+df = load_data()
+model = load_model()
 
 
 @app.route("/")

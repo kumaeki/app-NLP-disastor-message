@@ -5,7 +5,7 @@
         "*$py.class",
         ".Python{,/**}",
         "build{,/**}",
-        "{,/**}*.joblib",
+        "*.joblib",
         "develop-eggs{,/**}",
         "dist{,/**}",
         "downloads{,/**}",
@@ -32,5 +32,12 @@
         ".vscode{,/**}"
     ],
     "appService.defaultWebAppToDeploy": "/subscriptions/32ee0bbe-b8b7-4b3e-ac93-ecd7d6f0ac07/resourceGroups/rg-kuma-001/providers/Microsoft.Web/sites/app-NLP-disastor-message",
-    "appService.deploySubpath": "."
+    "appService.deploySubpath": ".",
+    "cSpell.words": [
+        "dotenv",
+        "joblib",
+        "Kuma",
+        "xaxis",
+        "yaxis"
+    ]
 }

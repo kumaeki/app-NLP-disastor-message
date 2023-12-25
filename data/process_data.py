@@ -10,7 +10,7 @@ def load_data(messages_filepath, categories_filepath):
 
     :param messages_filepath: the messages filepath
     :param categories_filepath: the categories filepath
-    :return: the dataframe
+    :return: the dataFrame
     """
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
@@ -38,11 +38,11 @@ def load_data(messages_filepath, categories_filepath):
 
 def save_data(df, database_filename, table_name):
     """
-    Save dataframe to DB
+    Save dataFrame to DB
 
-    :param df: dataframe generated based on  files
+    :param df: dataFrame generated based on  files
     :param database_filename: the db path
-    :param table_name: the table name where save the dataframe
+    :param table_name: the table name where save the dataFrame
     """
     engine = create_engine(f"sqlite:///{database_filename}")
     df.to_sql(table_name, engine, index=False)

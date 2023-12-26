@@ -5,6 +5,7 @@ from joblib import dump
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.pipeline import Pipeline
@@ -79,9 +80,14 @@ def evaluate_model(model, X_test, Y_test):
     :param X_test: X for test
     :param Y_test: y for test
     """
-    y_pred = model.predict(X_test["message"].values)
-    accuracy = (y_pred == Y_test).mean()
-    print("Accuracy:\n", accuracy)
+    Y_pred = model.predict(X_test["message"].values)
+
+    # Loop over each output column
+    columns_names = Y_test.columns.tolist()
+    for i in range(Y_test.shape[1]):
+        report = classification_report(Y_test.iloc[:, i], Y_pred[:, i])
+        print(f"==================={columns_names[i]}")
+        print(report)
 
 
 def save_model(model, model_filepath):

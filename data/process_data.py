@@ -45,7 +45,7 @@ def save_data(df, database_filename, table_name):
     :param table_name: the table name where save the dataFrame
     """
     engine = create_engine(f"sqlite:///{database_filename}")
-    df.to_sql(table_name, engine, index=False)
+    df.to_sql(table_name, engine, index=False, if_exists="replace")
 
 
 def main():

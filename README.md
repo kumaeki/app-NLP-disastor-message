@@ -12,6 +12,35 @@ This is a NLP portfolio program, based on the message and category message got f
 
 It could run in a Azure Web App. you could find my sample App here. <http://app-nlp-disaster.azurewebsites.net/>
 
+```text
+- .vscode
+    - settings.json  (setting file for vscode, if you want to deploy it to azure webapp, you will need it)
+- data
+    - disaster_categories.csv  (the data file1)
+    - disaster_messages.csv  (the data file2)
+    - KumaDB.db  (the DB file where save the processed data)
+    - process_data.py  (the python file process the data)
+- models
+    - __init__.py
+    - tokenize_kuma.py  (the python file define the tokenize function)
+    - train_classifier.py  (the python file train the model)
+- static  (static files)
+    - bootstrap
+        - css
+            - ***
+        - js
+            - ***
+- templates
+    - go.html  (after you input the message, this page show the categories)
+    - master.html  (the main page)
+- .development  (setting file for deploying to azure webapp)
+- .gitignore
+- app.py  (main python file of this app)
+- README.md
+- requirements.txt
+- tokenize_kuma.py  (same as models/tokenize_kuma.py, used by app.py when it load the trained model)
+```
+
 ## how to run the process_data.py
 
 run the command in the root folder

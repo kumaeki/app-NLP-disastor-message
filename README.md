@@ -1,6 +1,14 @@
 # find the disaster category from a message
 
+This is a app could classify message across 36 categories(water, electricity,hospitals ,etc, [here is the detail](#categories)).
+
+When you inputs a message into the app, it will returns classification results for all the 36 categories.
+
+## about the data
+
 This is a NLP portfolio program, based on the message and category message got from <https://www.figure-eight.com/>
+
+## about the code
 
 It could run in a Azure Web App. you could find my sample App here. <http://app-nlp-disaster.azurewebsites.net/>
 
@@ -43,3 +51,42 @@ MODEL_BLOB_NAME={your_model_path}
 DB_NAME={your_db_path}
 TABLE_NAME={your_db_name}
 ```
+
+## categories
+
+- related
+- request
+- offer
+- aid_related
+- medical_help
+- medical_products
+- search_and_rescue
+- security
+- military
+- child_alone
+- water
+- food
+- shelter  
+- clothing
+- money
+- missing_people
+- refugees
+- death
+- other_aid
+- infrastructure_related
+- transport
+- buildings
+- electricity
+- tools
+- hospitals
+- shops
+- aid_centers
+- other_infrastructure
+- weather_related  
+- floods
+- storm
+- fire
+- earthquake  
+- cold
+- other_weather
+- direct_report

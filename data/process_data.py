@@ -33,6 +33,9 @@ def load_data(messages_filepath, categories_filepath):
     categories = pd.concat([categories["id"], categories_split], axis=1)
     df = pd.merge(messages, categories, on="id").drop_duplicates()
 
+    # clean the unreasonable value
+    df = df[df["related"] != 2]
+
     return df
 
 
